@@ -9,24 +9,45 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+
+from corsheaders.defaults import default_headers, default_methods
+from dotenv import load_dotenv
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-g=9ea6*2lz0idvr3kgc%v*&7r)yy80)!q26$^a$2dbr$ud*nj4'
+SECRET_KEY = os.getenv("SECURITY_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.getenv("DJANGO_ENV") == "production":
+    DEBUG = False
+    ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+    CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS] + [f"http://{host}" for host in ALLOWED_HOSTS]
 
-ALLOWED_HOSTS = []
+    # CORS
+    # ------------------------------------------------------------------------------
+    CORS_ALLOW_METHODS = (
+        *default_methods,
+    )
 
+    CORS_ALLOW_HEADERS = (
+        *default_headers,
+        # "my-custom-header",
+    )
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    DEBUG = True
+    ALLOWED_HOSTS = ["*"]
+    CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]
 
 # Application definition
 
@@ -118,7 +139,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
