@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Local Apps
+    'ingredients.apps.IngredientsConfig',
+    # Third-party apps
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -120,3 +124,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Graphen
+GRAPHENE = {
+    "SCHEMA": "ingredients.schema.schema"
+}
