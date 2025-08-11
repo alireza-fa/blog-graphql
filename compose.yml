@@ -1,0 +1,23 @@
+name: graphql-example
+
+services:
+  graphql_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: graphql_app
+    container_name: graphql_app
+    restart: always
+    command: sh -c "python3 entrypoint.py"
+    volumes:
+      - type: bind
+        source: .
+        target: /code/
+      - type: bind
+        source: ./media
+        target: /code/media
+      - type: bind
+        source: ./static
+        target: /code/static
+    ports:
+      - "8000:8000"
